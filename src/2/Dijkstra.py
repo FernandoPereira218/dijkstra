@@ -44,9 +44,7 @@ class Dijkstra():
     
             # After visiting its neighbors, we mark the node as "visited"
             unvisited_nodes.remove(current_min_node)
-        
-        print(previous_nodes)
-        print(shortest_path)
+    
         return previous_nodes, shortest_path
 
     
