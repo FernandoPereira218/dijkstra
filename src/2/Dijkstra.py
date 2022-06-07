@@ -1,63 +1,62 @@
-#udacity
 import sys
-from Graph import Graph
+from Grafo import Grafo
 
 class Dijkstra():
     def __init__(self):
         pass
 
 
-    def dijkstra_algorithm(self, graph, start_node):
-        unvisited_nodes = list(graph.get_nodes())
+    def dijkstra_algorithm(self, grafo, vertice_inicial):
+        vertices_nao_testados = list(grafo.get_nodes())
     
         # We'll use this dict to save the cost of visiting each node and update it as we move along the graph   
-        shortest_path = {}
+        menor_caminho = {}
     
         # We'll use this dict to save the shortest known path to a node found so far
-        previous_nodes = {}
+        vertices_anteriores = {}
     
         # We'll use max_value to initialize the "infinity" value of the unvisited nodes   
-        max_value = sys.maxsize
-        for node in unvisited_nodes:
-            shortest_path[node] = max_value
+        inf = sys.maxsize
+        for vertice in vertices_nao_testados:
+            menor_caminho[vertice] = inf
         # However, we initialize the starting node's value with 0   
-        shortest_path[start_node] = 0
+        menor_caminho[vertice_inicial] = 0
         
         # The algorithm executes until we visit all nodes
-        while unvisited_nodes:
+        while vertices_nao_testados:
             # The code block below finds the node with the lowest score
-            current_min_node = None
-            for node in unvisited_nodes: # Iterate over the nodes
-                if current_min_node == None:
-                    current_min_node = node
-                elif shortest_path[node] < shortest_path[current_min_node]:
-                    current_min_node = node
+            menor_vertice = None
+            for vertice in vertices_nao_testados: # Iterate over the nodes
+                if menor_vertice == None:
+                    menor_vertice = vertice
+                elif menor_caminho[vertice] < menor_caminho[menor_vertice]:
+                    menor_vertice = vertice
                     
             # The code block below retrieves the current node's neighbors and updates their distances
-            neighbors = graph.get_outgoing_edges(current_min_node)
-            for neighbor in neighbors:
-                tentative_value = shortest_path[current_min_node] + graph.value(current_min_node, neighbor)
-                if tentative_value < shortest_path[neighbor]:
-                    shortest_path[neighbor] = tentative_value
+            adjacentes = grafo.get_outgoing_edges(menor_vertice)
+            for ajacente in adjacentes:
+                valor = menor_caminho[menor_vertice] + grafo.value(menor_vertice, ajacente)
+                if valor < menor_caminho[ajacente]:
+                    menor_caminho[ajacente] = valor
                     # We also update the best path to the current node
-                    previous_nodes[neighbor] = current_min_node
+                    vertices_anteriores[ajacente] = menor_vertice
     
             # After visiting its neighbors, we mark the node as "visited"
-            unvisited_nodes.remove(current_min_node)
+            vertices_nao_testados.remove(menor_vertice)
     
-        return previous_nodes, shortest_path
+        return vertices_anteriores, menor_caminho
 
     
-    def print_result(self, previous_nodes, shortest_path, start_node, target_node):
+    def print_result(self, vertices_anteriores, menor_caminho, vertice_inicial, vertice_final):
         path = []
-        node = target_node
+        node = vertice_final
         
-        while node != start_node:
+        while node != vertice_inicial:
             path.append(node)
-            node = previous_nodes[node]
+            node = vertices_anteriores[node]
     
         # Add the start node manually
-        path.append(start_node)
+        path.append(vertice_inicial)
         
-        print("We found the following best path with a value of {}.".format(shortest_path[target_node]))
+        print("Melhor caminho com valor {}.".format(menor_caminho[vertice_final]))
         print(" -> ".join(reversed(path)))
